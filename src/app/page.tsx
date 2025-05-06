@@ -5,6 +5,7 @@ import { ImageGrid } from '@/components/ImageGrid/ImageGrid';
 import { MediaUploader } from '@/components/MediaUploader/MediaUploader';
 import { VoiceRecognition } from '@/components/VoiceRecognition/VoiceRecognition';
 import { ProjectManager } from '@/components/ProjectManager/ProjectManager';
+import { usePersistentStorage } from '@/hooks/usePersistentStorage';
 
 interface MediaItem {
   id: string;
@@ -15,7 +16,7 @@ interface MediaItem {
 }
 
 export default function Home() {
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [mediaItems, setMediaItems] = usePersistentStorage<MediaItem[]>('mediaItems', []);
   const [currentProject, setCurrentProject] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isPerformingTrick, setIsPerformingTrick] = useState(false);
@@ -34,6 +35,10 @@ export default function Home() {
       setMediaItems(prev => [...prev, newItem]);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleDeleteMedia = (mediaId: string) => {
+    setMediaItems(prev => prev.filter(item => item.id !== mediaId));
   };
 
   const handleSpeechResult = (result: string) => {
@@ -120,6 +125,7 @@ export default function Home() {
                     setSelectedImage(item);
                     setTimeout(() => setSelectedImage(null), 2000);
                   }}
+                  onDelete={handleDeleteMedia}
                 />
               </div>
             </div>

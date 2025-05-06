@@ -1,63 +1,69 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MAGIC_TRICK_DURATION } from '../../constants';
 
-export function MagicTrick({ items, onComplete }) {
+export function MagicTrick({ items }) {
   const [isActive, setIsActive] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    if (isActive && items.length > 0) {
-      const randomIndex = Math.floor(Math.random() * items.length);
-      setSelectedItem(items[randomIndex]);
-
-      const timer = setTimeout(() => {
-        setIsActive(false);
-        setSelectedItem(null);
-        onComplete?.();
-      }, MAGIC_TRICK_DURATION);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isActive, items, onComplete]);
-
-  const startMagicTrick = () => {
+  const handleClick = () => {
     if (items.length === 0) return;
+    
     setIsActive(true);
+    setCurrentIndex(0);
+
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => {
+        if (prev >= items.length - 1) {
+          clearInterval(interval);
+          setIsActive(false);
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, MAGIC_TRICK_DURATION / items.length);
   };
 
   return (
-    <div className="relative">
-      <button
-        onClick={startMagicTrick}
-        disabled={isActive || items.length === 0}
-        className={`px-4 py-2 rounded-lg transition-all transform
-          ${isActive
-            ? 'bg-purple-600 text-white scale-105'
-            : items.length === 0
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-purple-500 text-white hover:bg-purple-600 hover:scale-105'
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex-1"
+    >
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleClick}
+        disabled={items.length === 0 || isActive}
+        className={`w-full px-4 py-2 rounded-lg transition-colors
+          ${items.length === 0
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : isActive
+              ? 'bg-primary-600 text-white'
+              : 'bg-primary-500 text-white hover:bg-primary-600'
           }`}
       >
-        {isActive ? '✨ Magic in Progress...' : '🎩 Magic Trick'}
-      </button>
+        {isActive ? 'Magic in Progress...' : 'Start Magic Trick'}
+      </motion.button>
 
-      {selectedItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate-fade-in">
-          <div className="max-w-4xl max-h-[90vh] p-4 transform scale-100 animate-zoom-in">
+      <AnimatePresence>
+        {isActive && items[currentIndex] && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="mt-4 aspect-square rounded-lg overflow-hidden"
+          >
             <img
-              src={selectedItem.url}
-              alt={selectedItem.title}
-              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+              src={items[currentIndex].url}
+              alt={items[currentIndex].title}
+              className="w-full h-full object-cover"
             />
-            <div className="mt-4 text-center text-white">
-              <h3 className="text-xl font-bold">{selectedItem.title}</h3>
-              <p className="text-sm text-gray-300">✨ Magic Trick ✨</p>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 } 

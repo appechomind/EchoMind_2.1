@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-
-const STORAGE_KEYS = {
-  PROJECTS: 'echomind_projects',
-  MEDIA_ITEMS: 'echomind_media_items',
-};
+import { STORAGE_KEYS } from '../constants';
 
 export function usePersistentStorage(key, initialValue) {
   const storageKey = STORAGE_KEYS[key];

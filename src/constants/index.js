@@ -19,9 +19,16 @@ export const STORAGE_KEYS = {
 export const THEME = {
   colors: {
     primary: {
-      light: '#60A5FA',
-      DEFAULT: '#3B82F6',
-      dark: '#2563EB',
+      50: '#f5f3ff',
+      100: '#ede9fe',
+      200: '#ddd6fe',
+      300: '#c4b5fd',
+      400: '#a78bfa',
+      500: '#8b5cf6',
+      600: '#7c3aed',
+      700: '#6d28d9',
+      800: '#5b21b6',
+      900: '#4c1d95',
     },
     background: {
       light: '#1E293B',
@@ -37,5 +44,17 @@ export const THEME = {
   gradients: {
     background: 'bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900',
     text: 'bg-gradient-to-r from-pink-500 to-violet-500',
+  },
+  animations: {
+    duration: {
+      fast: 0.2,
+      normal: 0.3,
+      slow: 0.5,
+    },
+    easing: {
+      easeInOut: [0.4, 0, 0.2, 1],
+      easeOut: [0, 0, 0.2, 1],
+      easeIn: [0.4, 0, 1, 1],
+    },
   },
 }; 

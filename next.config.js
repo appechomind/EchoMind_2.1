@@ -6,7 +6,6 @@ const nextConfig = {
   },
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '/EchoMind_2.1',
   trailingSlash: true,
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '/EchoMind_2.1',
 }
 
 module.exports = nextConfig 

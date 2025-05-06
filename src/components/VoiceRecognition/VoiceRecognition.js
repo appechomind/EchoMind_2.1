@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export function VoiceRecognition({ onCommand }) {
   const [isListening, setIsListening] = useState(false);
@@ -42,8 +43,14 @@ export function VoiceRecognition({ onCommand }) {
   };
 
   return (
-    <div className="flex-1">
-      <button
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex-1"
+    >
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={startListening}
         disabled={isListening || error}
         className={`w-full px-4 py-2 rounded-lg transition-colors
@@ -51,23 +58,33 @@ export function VoiceRecognition({ onCommand }) {
             ? 'bg-red-500 text-white'
             : error
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'bg-primary-500 text-white hover:bg-primary-600'
           }`}
       >
         {isListening ? (
           <div className="flex items-center justify-center gap-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            Listening...
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="w-2 h-2 bg-white rounded-full"
+            />
+            <span>Listening...</span>
           </div>
         ) : error ? (
           'Not Supported'
         ) : (
           'Start Voice Command'
         )}
-      </button>
+      </motion.button>
       {error && (
-        <p className="mt-2 text-sm text-red-500">{error}</p>
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-2 text-sm text-red-500"
+        >
+          {error}
+        </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 } 

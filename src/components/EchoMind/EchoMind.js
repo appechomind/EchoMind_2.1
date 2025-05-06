@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { ImageGrid } from '../ImageGrid/ImageGrid';
 import { MediaUploader } from '../MediaUploader/MediaUploader';
 import { ProjectManager } from '../ProjectManager/ProjectManager';
@@ -60,9 +61,19 @@ export function EchoMind() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-8"
+    >
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="md:col-span-1">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="md:col-span-1"
+        >
           <ProjectManager
             projects={projects}
             selectedProject={selectedProject}
@@ -70,9 +81,14 @@ export function EchoMind() {
             onProjectCreate={handleProjectCreate}
             onProjectDelete={handleProjectDelete}
           />
-        </div>
+        </motion.div>
         
-        <div className="md:col-span-3">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="md:col-span-3"
+        >
           <div className="space-y-6">
             <div className="flex flex-col md:flex-row gap-4">
               <MediaUploader onUpload={handleMediaUpload} />
@@ -81,9 +97,13 @@ export function EchoMind() {
             </div>
 
             {searchQuery && (
-              <div className="text-sm text-gray-500">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-gray-300"
+              >
                 Showing results for: {searchQuery}
-              </div>
+              </motion.div>
             )}
 
             <ImageGrid
@@ -91,8 +111,8 @@ export function EchoMind() {
               onDelete={handleMediaDelete}
             />
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 } 

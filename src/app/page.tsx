@@ -5,8 +5,8 @@ import { EchoMind } from '../components/EchoMind/EchoMind';
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen bg-slate-900">
       <EchoMind />
-    </main>
+    </div>
   );
 } 

@@ -1,68 +1,43 @@
 # EchoMind 2.1
 
-A magic app for mind reading and image manipulation, inspired by the "Inject" app but with enhanced features.
+A modern media management system with project organization and voice control.
 
 ## Features
 
-- **Project Management**: Create and manage multiple magic projects
-- **Media Upload**: Upload photos and videos with associated keywords
-- **Voice Recognition**: Trigger images using voice commands
-- **Google Images-style Display**: View matching images in a familiar interface
+- Media Management
+- Project Organization
+- Voice Control
+- Magic Trick Feature
 
 ## Getting Started
 
-### Prerequisites
+First, install the dependencies:
 
-- Node.js 18.x or later
-- npm 9.x or later
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
 
-### Installation
+Then, run the development server:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/appechomind/EchoMind_2.1.git
-   cd EchoMind2.1
-   ```
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+## Learn More
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+To learn more about the technologies used in this project:
 
-## Usage
-
-1. **Create a Project**
-   - Click "Create Project" and enter project details
-   - Add a name and description for your magic routine
-
-2. **Upload Media**
-   - Select a project
-   - Upload photos or videos
-   - Add keywords that will trigger each media item
-
-3. **Perform the Magic**
-   - Start voice recognition
-   - Speak the keywords
-   - Watch as the matching images appear
-
-## Development
-
-- Built with Next.js 14
-- TypeScript for type safety
-- Tailwind CSS for styling
-- Web Speech API for voice recognition
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://reactjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)

@@ -1,6 +1,7 @@
 'use client';
 
-import { EchoMind } from '@/components/EchoMind/EchoMind';
+import React from 'react';
+import { EchoMind } from '../components/EchoMind/EchoMind';
 
 export default function Home() {
   return (

@@ -1,0 +1,10 @@
+import { MediaItem, Project } from '@/types';
+export declare function generateId(): string;
+export declare function formatDate(timestamp: number): string;
+export declare function getFileExtension(filename: string): string;
+export declare function isImageFile(filename: string): boolean;
+export declare function isVideoFile(filename: string): boolean;
+export declare function getMediaType(filename: string): 'image' | 'video' | 'unknown';
+export declare function updateProjectMediaCount(project: Project, mediaItems: MediaItem[]): Project;
+export declare function filterMediaByProject(mediaItems: MediaItem[], projectId: string | null): MediaItem[];
+export declare function searchMedia(mediaItems: MediaItem[], query: string): MediaItem[];

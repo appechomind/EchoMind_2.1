@@ -1,15 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-export function usePersistentStorage<T>(key: string, initialValue: T) {
+const STORAGE_KEYS = {
+  PROJECTS: 'echomind_projects',
+  MEDIA_ITEMS: 'echomind_media_items',
+} as const;
+
+export function usePersistentStorage<T>(key: keyof typeof STORAGE_KEYS, initialValue: T) {
+  const storageKey = STORAGE_KEYS[key];
+
   // Initialize state with value from localStorage or initialValue
   const [value, setValue] = useState<T>(() => {
     if (typeof window === 'undefined') return initialValue;
     
     try {
-      const item = window.localStorage.getItem(key);
+      const item = window.localStorage.getItem(storageKey);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error('Error reading from localStorage:', error);
+      console.error(`Error reading from localStorage (${storageKey}):`, error);
       return initialValue;
     }
   });
@@ -17,11 +24,39 @@ export function usePersistentStorage<T>(key: string, initialValue: T) {
   // Update localStorage when value changes
   useEffect(() => {
     try {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      window.localStorage.setItem(storageKey, JSON.stringify(value));
     } catch (error) {
-      console.error('Error writing to localStorage:', error);
+      console.error(`Error writing to localStorage (${storageKey}):`, error);
+      // If storage is full, try to clear old data
+      if (error instanceof Error && error.name === 'QuotaExceededError') {
+        clearOldData();
+      }
     }
-  }, [key, value]);
+  }, [storageKey, value]);
 
-  return [value, setValue] as const;
+  const clearOldData = useCallback(() => {
+    try {
+      // Clear data older than 30 days
+      const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+      if (Array.isArray(value)) {
+        const filteredValue = value.filter((item: any) => 
+          item.updatedAt && item.updatedAt > thirtyDaysAgo
+        );
+        setValue(filteredValue as T);
+      }
+    } catch (error) {
+      console.error('Error clearing old data:', error);
+    }
+  }, [value]);
+
+  const clearStorage = useCallback(() => {
+    try {
+      window.localStorage.removeItem(storageKey);
+      setValue(initialValue);
+    } catch (error) {
+      console.error(`Error clearing localStorage (${storageKey}):`, error);
+    }
+  }, [storageKey, initialValue]);
+
+  return [value, setValue, clearStorage] as const;
 } 

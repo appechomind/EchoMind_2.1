@@ -1,110 +1,91 @@
 import React, { useState } from 'react';
-import { usePersistentStorage } from '@/hooks/usePersistentStorage';
-
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  mediaCount: number;
-}
+import { Project } from '@/types';
+import { formatDate } from '@/utils';
 
 interface ProjectManagerProps {
-  onProjectSelect: (projectId: string) => void;
+  projects: Project[];
+  selectedProject: string | null;
+  onProjectSelect: (projectId: string | null) => void;
+  onProjectCreate: (name: string) => void;
+  onProjectDelete: (id: string) => void;
 }
 
-export const ProjectManager: React.FC<ProjectManagerProps> = ({ onProjectSelect }) => {
-  const [projects, setProjects] = usePersistentStorage<Project[]>('projects', []);
-  const [newProject, setNewProject] = useState({ name: '', description: '' });
+export const ProjectManager: React.FC<ProjectManagerProps> = ({
+  projects,
+  selectedProject,
+  onProjectSelect,
+  onProjectCreate,
+  onProjectDelete
+}) => {
+  const [newProjectName, setNewProjectName] = useState('');
 
-  const handleCreateProject = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newProject.name.trim()) {
-      const project: Project = {
-        id: Date.now().toString(),
-        name: newProject.name,
-        description: newProject.description,
-        mediaCount: 0
-      };
-      setProjects([...projects, project]);
-      setNewProject({ name: '', description: '' });
+    if (newProjectName.trim()) {
+      onProjectCreate(newProjectName.trim());
+      setNewProjectName('');
     }
   };
 
-  const handleDeleteProject = (projectId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setProjects(projects.filter(p => p.id !== projectId));
-  };
-
   return (
-    <div className="space-y-6">
-      <form onSubmit={handleCreateProject} className="space-y-4">
-        <div>
-          <label htmlFor="projectName" className="block text-sm font-medium text-gray-300">
-            Project Name
-          </label>
-          <input
-            type="text"
-            id="projectName"
-            value={newProject.name}
-            onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Enter project name"
-          />
-        </div>
-        <div>
-          <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-300">
-            Description
-          </label>
-          <textarea
-            id="projectDescription"
-            value={newProject.description}
-            onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            rows={3}
-            placeholder="Enter project description"
-          />
-        </div>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold">Projects</h2>
+      
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          type="text"
+          value={newProjectName}
+          onChange={(e) => setNewProjectName(e.target.value)}
+          placeholder="New project name..."
+          className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <button
           type="submit"
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
         >
-          Create Project
+          Create
         </button>
       </form>
 
       <div className="space-y-2">
-        <h3 className="text-lg font-medium text-gray-300">Your Projects</h3>
-        {projects.length === 0 ? (
-          <p className="text-sm text-gray-400">No projects yet. Create one to get started!</p>
-        ) : (
-          <div className="space-y-2">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                onClick={() => onProjectSelect(project.id)}
-                className="cursor-pointer rounded-lg border border-gray-600 bg-gray-700 p-4 hover:bg-gray-600 transition-colors group"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-medium text-white">{project.name}</h4>
-                    <p className="text-sm text-gray-300">{project.description}</p>
-                    <p className="mt-2 text-xs text-gray-400">
-                      {project.mediaCount} media items
-                    </p>
-                  </div>
-                  <button
-                    onClick={(e) => handleDeleteProject(project.id, e)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-400 hover:text-red-500"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </div>
+        <button
+          onClick={() => onProjectSelect(null)}
+          className={`w-full text-left px-4 py-2 rounded-lg transition-colors
+            ${selectedProject === null
+              ? 'bg-blue-100 text-blue-700'
+              : 'hover:bg-gray-100'}`}
+        >
+          All Media
+        </button>
+
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            className={`group flex items-center justify-between px-4 py-2 rounded-lg transition-colors
+              ${selectedProject === project.id
+                ? 'bg-blue-100 text-blue-700'
+                : 'hover:bg-gray-100'}`}
+          >
+            <button
+              onClick={() => onProjectSelect(project.id)}
+              className="flex-1 text-left"
+            >
+              <div className="font-medium">{project.name}</div>
+              <div className="text-sm text-gray-500">
+                {project.mediaCount} items • Created {formatDate(project.createdAt)}
               </div>
-            ))}
+            </button>
+            
+            <button
+              onClick={() => onProjectDelete(project.id)}
+              className="opacity-0 group-hover:opacity-100 p-1 text-gray-500 hover:text-red-500 transition-opacity"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );

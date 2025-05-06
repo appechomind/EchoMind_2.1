@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { ACCEPTED_FILE_TYPES, MAX_FILE_SIZE } from '@/constants';
 
 interface MediaUploaderProps {
   onUpload: (file: File) => void;
@@ -14,11 +15,9 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({ onUpload }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif'],
-      'video/*': ['.mp4', '.webm', '.mov']
-    },
-    maxFiles: 1
+    accept: ACCEPTED_FILE_TYPES,
+    maxFiles: 1,
+    maxSize: MAX_FILE_SIZE
   });
 
   return (
@@ -50,7 +49,9 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({ onUpload }) => {
             <p>Drag and drop a file here, or click to select</p>
           )}
         </div>
-        <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+        <p className="text-xs text-gray-500">
+          PNG, JPG, GIF, WebP, MP4, WebM, MOV up to 10MB
+        </p>
       </div>
     </div>
   );

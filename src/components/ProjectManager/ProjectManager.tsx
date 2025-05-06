@@ -15,13 +15,14 @@ export const ProjectManager: React.FC<ProjectManagerProps> = ({ onProjectSelect 
   const [projects, setProjects] = useState<Project[]>([]);
   const [newProject, setNewProject] = useState({ name: '', description: '' });
 
-  const handleCreateProject = () => {
+  const handleCreateProject = (e: React.FormEvent) => {
+    e.preventDefault();
     if (newProject.name.trim()) {
       const project: Project = {
         id: Date.now().toString(),
         name: newProject.name,
         description: newProject.description,
-        mediaCount: 0,
+        mediaCount: 0
       };
       setProjects([...projects, project]);
       setNewProject({ name: '', description: '' });
@@ -29,60 +30,63 @@ export const ProjectManager: React.FC<ProjectManagerProps> = ({ onProjectSelect 
   };
 
   return (
-    <div className="p-4">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-4">Create New Project</h2>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Project Name
-            </label>
-            <input
-              type="text"
-              value={newProject.name}
-              onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-              placeholder="Enter project name"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
-            <textarea
-              value={newProject.description}
-              onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-              placeholder="Enter project description"
-              rows={3}
-            />
-          </div>
-          <button
-            onClick={handleCreateProject}
-            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 transition-colors"
-          >
-            Create Project
-          </button>
+    <div className="space-y-6">
+      <form onSubmit={handleCreateProject} className="space-y-4">
+        <div>
+          <label htmlFor="projectName" className="block text-sm font-medium text-gray-300">
+            Project Name
+          </label>
+          <input
+            type="text"
+            id="projectName"
+            value={newProject.name}
+            onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Enter project name"
+          />
         </div>
-      </div>
+        <div>
+          <label htmlFor="projectDescription" className="block text-sm font-medium text-gray-300">
+            Description
+          </label>
+          <textarea
+            id="projectDescription"
+            value={newProject.description}
+            onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            rows={3}
+            placeholder="Enter project description"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Create Project
+        </button>
+      </form>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Your Projects</h2>
-        <div className="space-y-4">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="p-4 border rounded-lg hover:border-primary cursor-pointer"
-              onClick={() => onProjectSelect(project.id)}
-            >
-              <h3 className="font-medium">{project.name}</h3>
-              <p className="text-sm text-gray-600">{project.description}</p>
-              <p className="text-sm text-gray-500 mt-2">
-                {project.mediaCount} media files
-              </p>
-            </div>
-          ))}
-        </div>
+      <div className="space-y-2">
+        <h3 className="text-lg font-medium text-gray-300">Your Projects</h3>
+        {projects.length === 0 ? (
+          <p className="text-sm text-gray-400">No projects yet. Create one to get started!</p>
+        ) : (
+          <div className="space-y-2">
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                onClick={() => onProjectSelect(project.id)}
+                className="cursor-pointer rounded-lg border border-gray-600 bg-gray-700 p-4 hover:bg-gray-600 transition-colors"
+              >
+                <h4 className="font-medium text-white">{project.name}</h4>
+                <p className="text-sm text-gray-300">{project.description}</p>
+                <p className="mt-2 text-xs text-gray-400">
+                  {project.mediaCount} media items
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

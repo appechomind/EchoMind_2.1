@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/EchoMind_2.1',
   images: {
     unoptimized: true,
   },
+  basePath: '/EchoMind_2.1',
 }
 
 module.exports = nextConfig 
